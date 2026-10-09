@@ -20,17 +20,15 @@ logs/
 *.sqlite
 *.sqlite3
 
-# Old version archives and third-party code (contains sensitive config, do not upload)
-_archive/
+# Old version archives and third-party code (contains sensitive config)
+archive/
 unlock-music/
 
 # Build and packaging output
-build/
-dist/
-_release/
-_tools/build/
-_tools/dist/
-_tools/pkg_tmp/
+build/output/
+build/packaging/pkg_tmp/
+build/packaging/dist/
+build/packaging/build/
 *.spec.bak
 
 # IDE and OS files

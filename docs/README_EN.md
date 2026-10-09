@@ -20,7 +20,7 @@ A PySide6 + QML FluentUI desktop tool for searching, previewing, and downloading
 - Windows 10/11 (other platforms are not currently guaranteed)
 - Python 3.10+
 - PySide6, requests, qasync, keyboard, qrcode, and Pillow
-- `ffmpeg.exe` for audio conversion, placed in `app/resources/` or available on `PATH`
+- `ffmpeg.exe` for audio conversion: download from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) and place it in `app/resources/`, or add its directory to `PATH`
 
 ## Development
 

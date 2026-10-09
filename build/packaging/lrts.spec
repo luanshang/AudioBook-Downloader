@@ -5,17 +5,17 @@
 import sys
 from pathlib import Path
 
-ROOT = Path(SPECPATH)
+ROOT = Path(SPECPATH).parent.parent
 
 a = Analysis(
-    ['main.py'],
+    [str(ROOT / 'main.py')],
     pathex=[str(ROOT)],
     binaries=[],
     datas=[
         # 内置资源（图标、ffmpeg 如有）
-        ('app/resources', 'app/resources'),
+        (str(ROOT / 'app' / 'resources'), 'app/resources'),
         # FluentUI 的 QML 资源（imports 里的 qmldir/qml 需要随包）
-        ('FluentUI/imports', 'FluentUI/imports'),
+        (str(ROOT / 'FluentUI' / 'imports'), 'FluentUI/imports'),
     ],
     hiddenimports=[
         'PySide6.QtMultimedia',

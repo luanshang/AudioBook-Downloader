@@ -10,12 +10,6 @@ FluScrollablePage {
     // ============ 标题与登录 ============
     RowLayout {
         width: parent.width
-        Label {
-            text: qsTr("喜马拉雅")
-            font.pixelSize: 18
-            font.bold: true
-            color: FluTheme.dark ? "#f5f5f5" : "#252525"
-        }
         Item {
             Layout.preferredWidth: 34
             Layout.preferredHeight: 34
@@ -159,9 +153,22 @@ FluScrollablePage {
         anchors.leftMargin: 16
         anchors.rightMargin: 16
         anchors.bottomMargin: 12
-        height: 96
+        height: 136
         z: 100
         spacing: 2
+        Item {
+            Layout.fillWidth: true
+            height: 38
+            Label {
+                id: xmPlayerStatus
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                text: qsTr("就绪")
+                color: "#888"
+            }
+        }
         Item {
             Layout.fillWidth: true
             height: 48
@@ -171,14 +178,18 @@ FluScrollablePage {
                 Item {
                     width: 42; height: 42
                     Image { width: 28; height: 28; anchors.centerIn: parent; source: FluTheme.dark ? "qrc:/qml/res/player-prev-dark.svg" : "qrc:/qml/res/player-prev.svg"; fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true; sourceSize.width: 96; sourceSize.height: 96 }
-                    MouseArea { anchors.fill: parent; onClicked: xm_play_relative(-1); ToolTip.visible: containsMouse; ToolTip.text: qsTr("上一集") }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: xm_play_relative(-1)
+                        ToolTip.visible: containsMouse
+                        ToolTip.text: qsTr("上一集")
+                    }
                 }
                 Item {
                     width: 42; height: 42
                     Image { width: 28; height: 28; anchors.centerIn: parent; source: xmPlaying ? (FluTheme.dark ? "qrc:/qml/res/player-pause-dark.svg" : "qrc:/qml/res/player-pause.svg") : (FluTheme.dark ? "qrc:/qml/res/player-play-dark.svg" : "qrc:/qml/res/player-play.svg"); fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true; sourceSize.width: 96; sourceSize.height: 96 }
                     MouseArea {
                         anchors.fill: parent
-                        hoverEnabled: true
                         onClicked: {
                             if (xmPlaying)
                                 Bridge.player_pause()
@@ -192,28 +203,32 @@ FluScrollablePage {
                 Item {
                     width: 42; height: 42
                     Image { width: 28; height: 28; anchors.centerIn: parent; source: FluTheme.dark ? "qrc:/qml/res/player-next-dark.svg" : "qrc:/qml/res/player-next.svg"; fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true; sourceSize.width: 96; sourceSize.height: 96 }
-                    MouseArea { anchors.fill: parent; onClicked: xm_play_relative(1); ToolTip.visible: containsMouse; ToolTip.text: qsTr("下一集") }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: xm_play_relative(1)
+                        ToolTip.visible: containsMouse
+                        ToolTip.text: qsTr("下一集")
+                    }
                 }
             }
-        }
-        Item {
-            Layout.fillWidth: true
-            height: 28
-            ColumnLayout {
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 0
-                Label {
-                    id: xmPlayerStatus
-                    Layout.preferredWidth: 190
-                    horizontalAlignment: Text.AlignHCenter
-                    elide: Text.ElideRight
-                    text: qsTr("就绪")
-                    color: "#888"
-                }
-                RowLayout {
-                    Layout.alignment: Qt.AlignHCenter
-                    Label { text: qsTr("音量"); color: "#888" }
-                    Slider { Layout.preferredWidth: 130; from: 0; to: 1; value: 0.8; onMoved: Bridge.player_set_volume(value) }
+            RowLayout {
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                Label { text: qsTr("音量"); color: "#888" }
+                Slider {
+                    Layout.preferredWidth: 130
+                    from: 0
+                    to: 1
+                    value: 1.0
+                    handle: Rectangle {
+                        implicitWidth: 10
+                        implicitHeight: 10
+                        radius: 5
+                        color: FluTheme.dark ? "#d0d0d0" : "#666666"
+                        x: parent.leftPadding + parent.visualPosition * (parent.availableWidth - width)
+                        y: parent.topPadding + parent.availableHeight / 2 - height / 2
+                    }
+                    onMoved: Bridge.player_set_volume(value)
                 }
             }
         }
@@ -223,9 +238,9 @@ FluScrollablePage {
             RowLayout {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: Math.min(parent.width * 0.465, 570)
-             Label { text: fmt_ms(xmPosition); color: "#888" }
-             Slider { Layout.fillWidth: true; from: 0; to: Math.max(1, xmDuration); value: xmPosition; onMoved: Bridge.player_seek(Math.round(value)) }
-             Label { text: fmt_ms(xmDuration); color: "#888" }
+                Label { text: fmt_ms(xmPosition); color: "#888" }
+                Slider { Layout.fillWidth: true; from: 0; to: Math.max(1, xmDuration); value: xmPosition; onMoved: Bridge.player_seek(Math.round(value)) }
+                Label { text: fmt_ms(xmDuration); color: "#888" }
             }
         }
     }

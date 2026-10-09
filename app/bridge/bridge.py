@@ -102,7 +102,6 @@ class Bridge(QObject):
     playerDurationChanged = Signal(int)
     playerStateChanged = Signal(str)
     playerError = Signal(str)
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self._pool = QThreadPool.globalInstance()
@@ -561,6 +560,20 @@ class Bridge(QObject):
             return {"ok": True, "url": url, "quality": quality}
 
         def done(r):
+            error_text = str(r.get("error", ""))
+            if not r.get("ok"):
+                if "status=118" in error_text or "请验证" in error_text:
+                    r["error"] = (
+                        "服务端返回 118：需要验证（这不等同于 Token 已过期）。"
+                        "请前往懒人听书 App 完成验证；验证后重新获取并应用 App 认证参数，再重新播放。"
+                    )
+                    self.loginStatus.emit(r["error"])
+                elif any(word in error_text.lower() for word in ("token expired", "token 过期", "token失效", "令牌过期")):
+                    r["error"] = (
+                        "Token 已过期或失效，请前往懒人听书 App 重新认证，"
+                        "再重新获取并应用 App 认证参数。"
+                    )
+                    self.loginStatus.emit(r["error"])
             if not r.get("ok") and self._playing_quality >= 2:
                 r["error"] = (
                     r.get("error", "获取播放地址失败")
@@ -899,7 +912,8 @@ class Bridge(QObject):
             AppSettings.set("LRTSMode", mode)
         except Exception as e:
             log.warning("保存懒人听书模式失败：%s", e)
-        self.loginStatus.emit(f"已切换懒人听书登录模式：{mode}")
+        mode_names = {"app": "APP（移动端）", "wechat": "微信", "web": "网页"}
+        self.loginStatus.emit(f"已切换懒人听书登录模式：{mode_names.get(mode, mode)}")
 
     @Slot(result=str)
     def get_lrts_auth(self) -> str:

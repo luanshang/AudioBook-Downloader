@@ -10,6 +10,9 @@
         <file>res/player-pause-dark.svg</file>
         <file>res/player-play-dark.svg</file>
         <file>res/player-next-dark.svg</file>
+        <file>res/platform-lrts.svg</file>
+        <file>res/platform-ximalaya.svg</file>
+        <file>res/platform-qidian.svg</file>
         <file>res/search.svg</file>
         <file>res/refresh.svg</file>
         <file>res/user.svg</file>

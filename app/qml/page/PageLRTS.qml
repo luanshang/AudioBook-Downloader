@@ -10,12 +10,6 @@ FluScrollablePage {
 
     RowLayout {
         width: parent.width
-        Label {
-            text: qsTr("懒人听书")
-            font.pixelSize: 18
-            font.bold: true
-            color: FluTheme.dark ? "#f5f5f5" : "#252525"
-        }
         Item {
             Layout.preferredWidth: 34
             Layout.preferredHeight: 34
@@ -550,8 +544,8 @@ FluButton {
                       onClicked: download_selected()
                   }
                   FluButton {
-                      text: qsTr("加载全部")
-                     onClicked: Bridge.load_all_album_lrts(currentAlbumId)
+                      text: loading.visible ? qsTr("加载中...") : qsTr("加载全部")
+                     onClicked: { loading.visible = true; statusLabel.text = qsTr("正在加载全部曲目..."); Bridge.load_all_album_lrts(currentAlbumId) }
                  }
                  }
         }
@@ -568,116 +562,75 @@ FluButton {
         anchors.leftMargin: 16
         anchors.rightMargin: 16
         anchors.bottomMargin: 12
-        height: 96
+        height: 136
         z: 100
         spacing: 2
         Item {
             Layout.fillWidth: true
+            height: 38
+            Label {
+                id: statusLabel
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                wrapMode: Text.WordWrap
+                text: qsTr("就绪")
+                color: "#888"
+            }
+        }
+        Item {
+            Layout.fillWidth: true
             height: 48
-
             Row {
-                id: playbackButtons
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
+                anchors.centerIn: parent
                 spacing: 6
-
                 Item {
-                    width: 42
-                    height: 42
-                    Image {
-                        width: 28
-                        height: 28
-                        anchors.centerIn: parent
-                        source: FluTheme.dark ? "qrc:/qml/res/player-prev-dark.svg" : "qrc:/qml/res/player-prev.svg"
-                        fillMode: Image.PreserveAspectFit
-                        smooth: true
-                        mipmap: true
-                        sourceSize.width: 96
-                        sourceSize.height: 96
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onClicked: player_prev()
-                        ToolTip.visible: containsMouse
-                        ToolTip.text: qsTr("上一集")
-                    }
+                    width: 42; height: 42
+                    Image { width: 28; height: 28; anchors.centerIn: parent; source: FluTheme.dark ? "qrc:/qml/res/player-prev-dark.svg" : "qrc:/qml/res/player-prev.svg"; fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true; sourceSize.width: 96; sourceSize.height: 96 }
+                    MouseArea { anchors.fill: parent; hoverEnabled: true; onClicked: player_prev(); ToolTip.visible: containsMouse; ToolTip.text: qsTr("上一集") }
                 }
                 Item {
-                    width: 42
-                    height: 42
-                    Image {
-                        width: 32
-                        height: 32
-                        anchors.centerIn: parent
-                        source: playerPlaying ? (FluTheme.dark ? "qrc:/qml/res/player-pause-dark.svg" : "qrc:/qml/res/player-pause.svg") : (FluTheme.dark ? "qrc:/qml/res/player-play-dark.svg" : "qrc:/qml/res/player-play.svg")
-                        fillMode: Image.PreserveAspectFit
-                        smooth: true
-                        mipmap: true
-                        sourceSize.width: 96
-                        sourceSize.height: 96
-                    }
+                    width: 42; height: 42
+                    Image { width: 28; height: 28; anchors.centerIn: parent; source: playerPlaying ? (FluTheme.dark ? "qrc:/qml/res/player-pause-dark.svg" : "qrc:/qml/res/player-pause.svg") : (FluTheme.dark ? "qrc:/qml/res/player-play-dark.svg" : "qrc:/qml/res/player-play.svg"); fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true; sourceSize.width: 96; sourceSize.height: 96 }
                     MouseArea {
                         anchors.fill: parent
                         hoverEnabled: true
-                                         onClicked: {
-                            if (playerPlaying) player_pause()
-                            else player_play()
+                        onClicked: {
+                            if (playerPlaying)
+                                player_pause()
+                            else
+                                player_play()
                         }
                         ToolTip.visible: containsMouse
                         ToolTip.text: playerPlaying ? qsTr("暂停") : qsTr("继续")
                     }
                 }
                 Item {
-                    width: 42
-                    height: 42
-                    Image {
-                        width: 28
-                        height: 28
-                        anchors.centerIn: parent
-                        source: FluTheme.dark ? "qrc:/qml/res/player-next-dark.svg" : "qrc:/qml/res/player-next.svg"
-                        fillMode: Image.PreserveAspectFit
-                        smooth: true
-                        mipmap: true
-                        sourceSize.width: 96
-                        sourceSize.height: 96
-                    }
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onClicked: player_next()
-                        ToolTip.visible: containsMouse
-                        ToolTip.text: qsTr("下一集")
-                    }
+                    width: 42; height: 42
+                    Image { width: 28; height: 28; anchors.centerIn: parent; source: FluTheme.dark ? "qrc:/qml/res/player-next-dark.svg" : "qrc:/qml/res/player-next.svg"; fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true; sourceSize.width: 96; sourceSize.height: 96 }
+                    MouseArea { anchors.fill: parent; hoverEnabled: true; onClicked: player_next(); ToolTip.visible: containsMouse; ToolTip.text: qsTr("下一集") }
                 }
             }
-        }
-        Item {
-            Layout.fillWidth: true
-            height: 28
-            ColumnLayout {
-                anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 0
-                Label {
-                    id: statusLabel
-                    Layout.preferredWidth: 190
-                    horizontalAlignment: Text.AlignHCenter
-                    elide: Text.ElideRight
-                    text: qsTr("就绪")
-                    color: "#888"
-                }
-                RowLayout {
-                    Layout.alignment: Qt.AlignHCenter
-                    Label { text: qsTr("音量"); color: "#888" }
-                    Slider {
-                        id: volumeSlider
-                        Layout.preferredWidth: 130
-                        from: 0
-                        to: 1
-                        value: 0.8
-                        onMoved: Bridge.player_set_volume(value)
-                    }
-                }
+            RowLayout {
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                Label { text: qsTr("音量"); color: "#888" }
+                Slider {
+                     id: volumeSlider
+                     Layout.preferredWidth: 130
+                     from: 0
+                     to: 1
+                     value: 1.0
+                     handle: Rectangle {
+                         implicitWidth: 10
+                         implicitHeight: 10
+                         radius: 5
+                         color: FluTheme.dark ? "#d0d0d0" : "#666666"
+                         x: volumeSlider.leftPadding + volumeSlider.visualPosition * (volumeSlider.availableWidth - width)
+                         y: volumeSlider.topPadding + volumeSlider.availableHeight / 2 - height / 2
+                     }
+                     onMoved: Bridge.player_set_volume(value)
+                 }
             }
         }
         Item {
@@ -686,16 +639,9 @@ FluButton {
             RowLayout {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: Math.min(parent.width * 0.465, 570)
-             Label { text: fmt_ms(playerPosition); color: "#888" }
-             Slider {
-                 id: playerSlider
-                 Layout.fillWidth: true
-                 from: 0
-                 to: Math.max(1, playerDuration)
-                 value: playerPosition
-                 onMoved: Bridge.player_seek(Math.round(value))
-             }
-             Label { text: fmt_ms(playerDuration); color: "#888" }
+                Label { text: fmt_ms(playerPosition); color: "#888" }
+                Slider { id: playerSlider; Layout.fillWidth: true; from: 0; to: Math.max(1, playerDuration); value: playerPosition; onMoved: Bridge.player_seek(Math.round(value)) }
+                Label { text: fmt_ms(playerDuration); color: "#888" }
             }
         }
     }
@@ -792,6 +738,7 @@ FluButton {
 
         function onAlbumLoaded(result) {
             searchLoading.visible = false
+            loading.visible = false
             if (!result.ok) { statusLabel.text = "分析失败: " + (result.error || ""); return }
             currentAlbumId = String(result.albumId || (result.album && result.album.id) || "")
             currentAlbumTitle = (result.album && result.album.name) || ""

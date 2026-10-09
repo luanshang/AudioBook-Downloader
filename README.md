@@ -20,7 +20,7 @@
 - Windows 10/11（其他平台需要自行验证）
 - Python 3.10+
 - PySide6、requests、qasync、keyboard、qrcode、Pillow
-- 音频格式转换需要 `ffmpeg.exe`（放入 `app/resources/` 或加入 PATH）
+- 音频格式转换需要 `ffmpeg.exe`：从 [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) 下载后放入 `app/resources/`，或将其所在目录加入 PATH
 
 ## 开发运行
 
@@ -28,7 +28,7 @@
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-python main.py
+uv run python main.py
 ```
 
 如果修改了 QML 资源，重新生成资源文件：
@@ -48,7 +48,7 @@ python main.py
 
 ## 抓包调试
 
-授权抓包、HTTPS 证书、Reqable 过滤、脱敏和故障排查请参阅 [SKILL.md](SKILL.md)。不得利用抓包绕过付费、访问控制或数字版权保护。
+授权会话诊断、HTTPS 证书、Reqable 过滤、脱敏和故障排查请参阅 [Skill/authorized-session-diagnostics/README.md](Skill/authorized-session-diagnostics/README.md)。不得利用抓包绕过付费、访问控制或数字版权保护。
 
 ## 项目结构
 

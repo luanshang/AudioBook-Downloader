@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""打包便携版 ZIP：将 _release/有声书下载器_便携版 压缩为 Portable.zip。
+"""打包便携版 ZIP：将 build/output/有声书下载器_便携版 压缩为 ZIP。
 
 用法:
-    python _tools/make_portable_zip.py
+    uv run python build/packaging/make_portable_zip.py
 产物:
-    _release/有声书下载器_便携版_v2.0.0.zip   （zip 内顶层目录为 有声书下载器_便携版/，
+    build/output/有声书下载器_便携版_v0.0.1.zip   （zip 内顶层目录为 有声书下载器_便携版/，
                                               解压后双击 有声书下载器.exe 即可启动）
 """
 
@@ -16,18 +16,18 @@ import sys
 import zipfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-RELEASE_DIR = ROOT / "_release"
+ROOT = Path(__file__).resolve().parent.parent.parent
+RELEASE_DIR = ROOT / "build" / "output"
 PORTABLE_DIR = RELEASE_DIR / "有声书下载器_便携版"
 APP_NAME = "有声书下载器"
-APP_VERSION = "2.0.0"
+APP_VERSION = "0.0.1"
 OUT_ZIP = RELEASE_DIR / f"{APP_NAME}_便携版_v{APP_VERSION}.zip"
 
 
 def build_zip() -> None:
     if not PORTABLE_DIR.is_dir():
         print(f"便携版目录不存在: {PORTABLE_DIR}", file=sys.stderr)
-        print("请先运行 python build_release.py 生成便携版。", file=sys.stderr)
+        print("请先运行 uv run python build/scripts/build_release.py 生成便携版。", file=sys.stderr)
         raise SystemExit(1)
 
     if OUT_ZIP.exists():

@@ -8,9 +8,15 @@ import shutil
 import subprocess
 import sys
 import threading
-import tkinter as tk
 from pathlib import Path
-from tkinter import filedialog, messagebox, ttk
+
+# tkinter 仅 tkinter 版向导使用；打包（排除 tkinter）时导入失败不致命
+try:
+    import tkinter as tk
+    from tkinter import filedialog, messagebox, ttk
+except ImportError:  # pragma: no cover - 打包环境无 tkinter
+    tk = None
+    filedialog = messagebox = ttk = None
 
 APP_NAME = "有声书下载器"
 APP_VERSION = "2.0.0"
@@ -22,10 +28,20 @@ def default_install_dir() -> str:
     return os.path.join(local, "Programs", APP_NAME)
 
 
+def all_users_install_dir() -> str:
+    program_files = os.environ.get("ProgramFiles") or r"C:\Program Files"
+    return os.path.join(program_files, APP_NAME)
+
+
 def source_dir() -> str:
     if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, "app")
-    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "app")
+    here = os.path.dirname(os.path.abspath(__file__))
+    # 开发模式：优先打包暂存目录 pkg_tmp，其次 _tools/app
+    for candidate in (os.path.join(here, "pkg_tmp"), os.path.join(here, "app")):
+        if os.path.isdir(candidate):
+            return candidate
+    return os.path.join(here, "app")
 
 
 def create_shortcut(exe_path: str, work_dir: str) -> None:
@@ -85,7 +101,7 @@ def run_silent() -> int:
 
 
 class InstallerWizard:
-    def __init__(self, root: tk.Tk):
+    def __init__(self, root: "tk.Tk"):
         self.root = root
         self.root.title(f"{APP_NAME} v{APP_VERSION} 安装")
         self.root.geometry("620x390")

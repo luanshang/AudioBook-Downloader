@@ -13,12 +13,12 @@ import tempfile
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 QRC = ROOT / "app" / "qml" / "resource.qrc"
 QRC_PY = ROOT / "app" / "qml" / "app_qml_rc.py"
-INSTALLER_SPEC = ROOT / "_tools" / "setup.spec"
-INSTALLER_NAME = "有声书下载器_安装版_v2.0.0.exe"
-RELEASE_DIR = ROOT / "Release"
+INSTALLER_SPEC = ROOT / "build" / "packaging" / "setup.spec"
+INSTALLER_NAME = "有声书下载器_安装版_v0.0.1.exe"
+RELEASE_DIR = ROOT / "build" / "output"
 RELEASE_PORTABLE_DIR = RELEASE_DIR / "有声书下载器_便携版"
 RELEASE_INSTALLER = RELEASE_DIR / INSTALLER_NAME
 
@@ -58,7 +58,7 @@ def build_portable(work_dir: Path) -> Path:
     dist_dir = work_dir / "dist"
     build_dir = work_dir / "build"
     run([
-        "-m", "PyInstaller", str(ROOT / "lrts.spec"),
+        "-m", "PyInstaller", str(ROOT / "build" / "packaging" / "lrts.spec"),
         "--noconfirm", "--clean",
         "--distpath", str(dist_dir),
         "--workpath", str(build_dir),
@@ -117,7 +117,7 @@ def build_installer(work_dir: Path, staging_dir: Path) -> Path:
         "--distpath", str(dist_dir),
         "--workpath", str(build_dir),
     ], env=env)
-    installer = dist_dir / "有声书下载器_安装版_v2.0.0.exe"
+    installer = dist_dir / INSTALLER_NAME
     if not installer.is_file():
         raise FileNotFoundError(f"安装器不存在: {installer}")
     return installer

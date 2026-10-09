@@ -1,13 +1,14 @@
 ; 有声书下载器 EXE 安装包（Inno Setup 6）
 ; 编译：ISCC.exe installer.iss
-; 产物：_release\有声书下载器_安装版_v2.0.0.exe
+; 产物：build\output\AudioBook Downloader-v0.0.1-setup.exe
 
 #define MyAppName "有声书下载器"
-#define MyAppVersion "2.0.0"
+#define MyAppSlug "AudioBook Downloader"
+#define MyAppVersion "0.0.1"
 #define MyAppPublisher "AudioBook Downloader"
 #define MyAppExeName "有声书下载器.exe"
-#define MyAppIcon "app\resources\favicon.ico"
-#define PortableDir "Release\有声书下载器_便携版"
+#define MyAppIcon "installer_icon.ico"
+#define PortableDir "..\output\有声书下载器_便携版"
 
 [Setup]
 AppId={{8F1C9E5A-2D4B-4A6F-BB33-7E3D5A1C9B42}
@@ -15,15 +16,17 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-DefaultDirName={localappdata}\Programs\{#MyAppName}
+DefaultDirName={autopf}\{#MyAppName}
+DefaultDirNamePrivileges=admin
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-OutputDir=Release
-OutputBaseFilename=audiobook-downloader-v{#MyAppVersion}-setup
+OutputDir=..\output
+OutputBaseFilename={#MyAppSlug}-v{#MyAppVersion}-setup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
-PrivilegesRequired=lowest
+PrivilegesRequired=admin
+PrivilegesRequiredOverridesAllowed=dialog
 ArchitecturesInstallIn64BitMode=x64compatible
 SetupIconFile={#MyAppIcon}
 UninstallDisplayIcon={app}\{#MyAppExeName}
