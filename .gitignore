@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+
+# Local runtime data and secrets
+lrts_app_auth.json
+**/*auth.json
+**/*auth*.json
+*.cookie
+*.cookies
+.env
+.env.*
+
+# Local application data
+logs/
+*.log
+*.db
+*.sqlite
+*.sqlite3
+
+# Old version archives and third-party code (contains sensitive config, do not upload)
+_archive/
+unlock-music/
+
+# Build and packaging output
+build/
+dist/
+_release/
+_tools/build/
+_tools/dist/
+_tools/pkg_tmp/
+*.spec.bak
+
+# IDE and OS files
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db

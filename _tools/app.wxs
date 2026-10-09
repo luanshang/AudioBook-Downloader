@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  有声书下载器 MSI 安装包（WiX Toolset v4）
+  编译：
+    1. 先生成 Components.wxs（收割便携版目录）:
+       wix harvest dir "_release\有声书下载器_便携版" -o Components.wxs -culture zh-CN
+    2. 再编译:
+       wix build app.wxs Components.wxs -o "_release\有声书下载器_安装版_v2.0.0.msi"
+  说明：安装到 %LocalAppData%\Programs\有声书下载器（per-user，应用运行时需要写 data/logs）。
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="有声书下载器"
+           Manufacturer="AudioBook Downloader"
+           Version="2.0.0"
+           UpgradeCode="8F1C9E5A-2D4B-4A6F-BB33-7E3D5A1C9B42"
+           Scope="perUser"
+           Language="2052"
+           InstallerVersion="500"
+           Compressed="yes">
+    <SummaryInformation Description="有声书下载器 v2.0.0 安装包" />
+
+    <MajorUpgrade DowngradeErrorMessage="已安装更高版本，无法降级安装。" />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="LocalAppDataFolder" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="LocalAppDataFolder">
+        <Directory Id="INSTALLFOLDER" Name="有声书下载器" />
+      </Directory>
+    </Directory>
+
+    <Property Id="ARPPRODUCTICON" Value="favicon.ico" />
+    <Property Id="ARPHELPLINK" Value="" />
+
+    <Icon Id="favicon.ico" SourceFile="app\resources\favicon.ico" />
+
+    <Feature Id="MainFeature" Title="有声书下载器" Level="1">
+      <ComponentGroupRef Id="PortableFiles" />
+    </Feature>
+
+    <UI Id="WixUI_InstallDir" />
+    <UIRef Id="WixUI_InstallDir" />
+  </Package>
+</Wix>

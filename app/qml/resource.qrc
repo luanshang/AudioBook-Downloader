@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>App.qml</file>
+        <file>res/favicon.ico</file>
+        <file>res/player-prev.svg</file>
+        <file>res/player-pause.svg</file>
+        <file>res/player-play.svg</file>
+        <file>res/player-next.svg</file>
+        <file>res/player-prev-dark.svg</file>
+        <file>res/player-pause-dark.svg</file>
+        <file>res/player-play-dark.svg</file>
+        <file>res/player-next-dark.svg</file>
+        <file>res/search.svg</file>
+        <file>res/refresh.svg</file>
+        <file>res/user.svg</file>
+        <file>res/settings.svg</file>
+        <file>res/about.svg</file>
+        <file>window/MainWindow.qml</file>
+        <file>global/NavItems.qml</file>
+        <file>global/NavFooter.qml</file>
+        <file>global/qmldir</file>
+        <file>page/PageLRTS.qml</file>
+        <file>page/PageXimalaya.qml</file>
+        <file>page/PageQidian.qml</file>
+        <file>page/PageSettings.qml</file>
+        <file>page/PageCopyright.qml</file>
+    </qresource>
+</RCC>
