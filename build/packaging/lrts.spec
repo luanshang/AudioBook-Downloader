@@ -66,6 +66,7 @@ exe = EXE(
     console=False,          # GUI 程序，不弹控制台
     disable_windowed_traceback=False,
     icon=str(ROOT / 'app' / 'resources' / 'favicon.ico'),
+    contents_directory='.', # 依赖库与 exe 平铺在同一目录（不生成 _internal 子目录）
 )
 
 coll = COLLECT(

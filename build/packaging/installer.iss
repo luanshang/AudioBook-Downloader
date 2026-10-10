@@ -4,7 +4,10 @@
 
 #define MyAppName "有声书下载器"
 #define MyAppSlug "AudioBook Downloader"
+#ifndef MyAppVersion
 #define MyAppVersion "0.0.1"
+#endif
+#define MyAppInstallDir "AudioBook Downloader"
 #define MyAppPublisher "AudioBook Downloader"
 #define MyAppExeName "有声书下载器.exe"
 #define MyAppIcon "installer_icon.ico"
@@ -14,10 +17,9 @@
 AppId={{8F1C9E5A-2D4B-4A6F-BB33-7E3D5A1C9B42}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-AppVerName={#MyAppName} {#MyAppVersion}
+AppVerName={#MyAppName} Ver {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-DefaultDirName={autopf}\{#MyAppName}
-DefaultDirNamePrivileges=admin
+DefaultDirName={autopf}\{#MyAppInstallDir}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=..\output
@@ -25,7 +27,7 @@ OutputBaseFilename={#MyAppSlug}-v{#MyAppVersion}-setup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
-PrivilegesRequired=admin
+PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 ArchitecturesInstallIn64BitMode=x64compatible
 SetupIconFile={#MyAppIcon}
@@ -47,7 +49,7 @@ Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "启动 {#MyAppName}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "启动 {#MyAppName}"; Flags: nowait postinstall skipifsilent runascurrentuser
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}\data"

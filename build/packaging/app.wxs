@@ -4,26 +4,34 @@
   编译：
     1. 先生成 Components.wxs（Python 脚本遍历便携版目录生成）
     2. 再编译:
-       wix build build\packaging\app.wxs build\packaging\Components.wxs -o build\output\AudioBook Downloader-v0.0.1.msi
-  说明：安装到 %LocalAppData%\Programs\有声书下载器（per-user，应用运行时需要写 data/logs）。
+       wix build build\packaging\app.wxs build\packaging\Components.wxs -d AppVersion=0.0.1 -o build\output\AudioBook Downloader-v0.0.1.msi
+  说明：WixUI_Advanced 向导让用户选择“为所有用户安装/仅为当前用户安装”。
+        per-user 装到 %LocalAppData%\Programs\有声书下载器，per-machine 装到 Program Files。
 -->
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
   <Package Name="有声书下载器"
            Manufacturer="AudioBook Downloader"
-           Version="0.0.1"
+           Version="$(var.AppVersion)"
            UpgradeCode="8F1C9E5A-2D4B-4A6F-BB33-7E3D5A1C9B42"
-           Scope="perUser"
+           Scope="perUserOrMachine"
            Language="2052"
+           Codepage="65001"
            InstallerVersion="500"
            Compressed="yes">
-    <SummaryInformation Description="有声书下载器 v0.0.1 安装包" />
+    <SummaryInformation Description="有声书下载器 Ver $(var.AppVersion) 安装包" />
 
     <MajorUpgrade DowngradeErrorMessage="已安装更高版本，无法降级安装。" />
 
     <MediaTemplate EmbedCab="yes" />
 
-    <StandardDirectory Id="LocalAppDataFolder" />
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER" Name="有声书下载器" />
+    </StandardDirectory>
+
+    <!-- WixUI_Advanced 需要的属性：应用目录名 + 默认安装范围（per-machine） -->
+    <Property Id="ApplicationFolderName" Value="有声书下载器" />
+    <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
 
     <Property Id="ARPPRODUCTICON" Value="favicon.ico" />
 
@@ -33,6 +41,6 @@
       <ComponentGroupRef Id="PortableFiles" />
     </Feature>
 
-    <UIRef Id="WixUI_InstallDir" />
+    <ui:WixUI Id="WixUI_Advanced" />
   </Package>
 </Wix>

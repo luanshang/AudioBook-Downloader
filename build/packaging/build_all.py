@@ -37,6 +37,14 @@ APP_NAME = "有声书下载器"
 APP_SLUG = "AudioBook Downloader"   # 发行文件名中的 slug
 APP_VERSION = "0.0.1"
 
+
+def configure_version(version: str) -> None:
+    global APP_VERSION, OUT_EXE, OUT_MSI, OUT_ZIP
+    APP_VERSION = version
+    OUT_EXE = RELEASE_DIR / f"{APP_SLUG}-v{APP_VERSION}-setup.exe"
+    OUT_MSI = RELEASE_DIR / f"{APP_SLUG}-v{APP_VERSION}.msi"
+    OUT_ZIP = RELEASE_DIR / f"{APP_SLUG}-v{APP_VERSION}-portable.zip"
+
 TOOLS = ROOT / "build" / "packaging"
 ISS_FILE = TOOLS / "installer.iss"
 WXS_FILE = TOOLS / "app.wxs"
@@ -47,7 +55,7 @@ OUT_EXE = RELEASE_DIR / f"{APP_SLUG}-v{APP_VERSION}-setup.exe"
 OUT_MSI = RELEASE_DIR / f"{APP_SLUG}-v{APP_VERSION}.msi"
 OUT_ZIP = RELEASE_DIR / f"{APP_SLUG}-v{APP_VERSION}-portable.zip"
 
-PORTABLE_REL = Path("有声书下载器_便携版")  # zip 内部顶层目录名
+PORTABLE_REL = Path(f"{APP_SLUG}-v{APP_VERSION}-portable")  # zip 内部顶层目录名（与 ZIP 文件名一致）
 
 
 def find_tool(names: list[str], fallback_dirs: list[Path]) -> str | None:
@@ -100,7 +108,7 @@ def build_zip() -> None:
 
 def build_exe(iscc: str) -> None:
     print("编译 Inno Setup EXE 安装包 ...")
-    subprocess.run([iscc, str(ISS_FILE)], cwd=ROOT, check=True)
+    subprocess.run([iscc, f"/DMyAppVersion={APP_VERSION}", str(ISS_FILE)], cwd=ROOT, check=True)
 
 
 def _sha256(path: Path) -> str:
@@ -231,20 +239,39 @@ def build_msi(wix: str) -> None:
     generate_components_wxs(COMPONENTS_WXS)
     subprocess.run(
         [wix, "build", str(WXS_FILE), str(COMPONENTS_WXS),
+         "-d", f"AppVersion={APP_VERSION}",
          "-ext", "WixToolset.UI.wixext",
          "-o", str(OUT_MSI)],
         cwd=ROOT, check=True,
     )
     print(f"MSI 安装包: {OUT_MSI.name}")
+    # 删除 WiX 调试符号数据库（.wixpdb），仅调试用，不随发布
+    pdb = RELEASE_DIR / f"{OUT_MSI.stem}.wixpdb"
+    if pdb.exists():
+        pdb.unlink()
+        print(f"  清理调试符号: {pdb.name}")
+
+
+def write_sha256_files() -> None:
+    """为每个发布产物生成独立的 .sha256 校验文件（sha256sum 格式）。"""
+    for path in (OUT_EXE, OUT_MSI, OUT_ZIP):
+        if not path.is_file():
+            continue
+        digest = _sha256(path)
+        sidecar = RELEASE_DIR / f"{path.name}.sha256"
+        sidecar.write_text(f"{digest}  {path.name}\n", encoding="ascii")
+        print(f"  校验文件 : {sidecar.name}")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="一键产出便携版ZIP + EXE + MSI 三件套")
+    parser.add_argument("--version", default=APP_VERSION, help="发行版本号，例如 0.0.2 或 1.0.0")
     parser.add_argument("--skip-pyinstaller", action="store_true", help="跳过 PyInstaller（需要已有便携版）")
     parser.add_argument("--skip-zip", action="store_true", help="跳过 ZIP")
     parser.add_argument("--skip-exe", action="store_true", help="跳过 EXE")
     parser.add_argument("--skip-msi", action="store_true", help="跳过 MSI")
     args = parser.parse_args()
+    configure_version(args.version)
 
     if not args.skip_pyinstaller:
         ensure_portable()
@@ -267,6 +294,7 @@ def main() -> int:
             return 1
         build_msi(wix)
 
+    write_sha256_files()
     write_latest_manifest()
     print("\n打包完成：")
     if not args.skip_zip:

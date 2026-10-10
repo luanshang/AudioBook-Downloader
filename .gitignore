@@ -30,6 +30,16 @@ build/packaging/pkg_tmp/
 build/packaging/dist/
 build/packaging/build/
 *.spec.bak
+*.wixpdb
+
+# Custom installer artifacts (payload + Rust build products)
+build/installer/payload.exe
+build/installer-host/target/
+build/installer-host/gen/
+installer/icon-source.png
+
+# Node
+node_modules/
 
 # IDE and OS files
 .vscode/

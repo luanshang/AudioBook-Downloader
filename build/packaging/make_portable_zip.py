@@ -41,8 +41,8 @@ def build_zip() -> None:
         for file in sorted(PORTABLE_DIR.rglob("*")):
             if not file.is_file():
                 continue
-            # zip 内路径: 有声书下载器_便携版/<相对路径>，顶层保留目录名
-            arcname = str(PORTABLE_DIR.name / file.relative_to(PORTABLE_DIR))
+            # zip 内路径: AudioBook Downloader/<相对路径>，顶层保留目录名
+            arcname = str(Path("AudioBook Downloader") / file.relative_to(PORTABLE_DIR))
             zf.write(file, arcname)
 
     size_mb = round(OUT_ZIP.stat().st_size / 1024 / 1024, 1)
