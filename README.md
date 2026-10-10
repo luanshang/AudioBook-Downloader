@@ -79,18 +79,9 @@ uv run python build/packaging/build_all.py
 
 ### 下载与合并（分卷压缩包）
 
-便携版 ZIP 超过 Gitee 单文件 100MB 限制，Release 中拆分为多卷（`*.part01`、`*.part02`…）。请下载**全部分卷**后按顺序合并：
+便携版 ZIP 超过 Gitee 单文件 100MB 限制，Release 中以**分卷压缩包**形式发布（如 7-Zip / WinRAR 分卷）。请下载**全部分卷**到同一目录，然后解压**第一卷**即可自动合并（或使用 `copy /b` 手动合并）。
 
-```bash
-# 合并所有分卷（Windows 可用 copy 命令）
-copy /b "AudioBook Downloader-v0.0.1-portable.zip.part01" + "AudioBook Downloader-v0.0.1-portable.zip.part02" + "AudioBook Downloader-v0.0.1-portable.zip.part03" "AudioBook Downloader-v0.0.1-portable.zip"
-```
-
-```bash
-# 或使用 7-Zip / WinRAR 的“解压分卷”功能直接解压 .part01
-```
-
-合并后用 `.sha256` 校验完整性：
+合并后可用 `.sha256` 校验完整性：
 
 ```bash
 certutil -hashfile "AudioBook Downloader-v0.0.1-portable.zip" SHA256
