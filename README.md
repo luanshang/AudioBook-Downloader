@@ -63,8 +63,37 @@ _tools/           打包和安装工具
 
 ## 打包
 
+便携版（PyInstaller，依赖库与 exe 同目录）：
+
 ```bash
-pyinstaller lrts.spec --noconfirm --clean
+uv run python build/scripts/build_release.py
+```
+
+一键产出便携版 ZIP + EXE 安装包 + MSI：
+
+```bash
+uv run python build/packaging/build_all.py
+```
+
+产物输出到 `build/output/`，同时生成 `.sha256` 校验文件和更新清单 `latest.json`。
+
+### 下载与合并（分卷压缩包）
+
+便携版 ZIP 超过 Gitee 单文件 100MB 限制，Release 中拆分为多卷（`*.part01`、`*.part02`…）。请下载**全部分卷**后按顺序合并：
+
+```bash
+# 合并所有分卷（Windows 可用 copy 命令）
+copy /b "AudioBook Downloader-v0.0.1-portable.zip.part01" + "AudioBook Downloader-v0.0.1-portable.zip.part02" + "AudioBook Downloader-v0.0.1-portable.zip.part03" "AudioBook Downloader-v0.0.1-portable.zip"
+```
+
+```bash
+# 或使用 7-Zip / WinRAR 的“解压分卷”功能直接解压 .part01
+```
+
+合并后用 `.sha256` 校验完整性：
+
+```bash
+certutil -hashfile "AudioBook Downloader-v0.0.1-portable.zip" SHA256
 ```
 
 ## 许可证与免责声明
